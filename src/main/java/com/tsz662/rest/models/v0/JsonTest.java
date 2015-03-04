@@ -1,4 +1,4 @@
-package com.canon.tsz662.rest.models.v0;
+package com.tsz662.rest.models.v0;
 
 import java.util.List;
 import java.util.Map;
@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.canon.tsz662.rest.models.v1.Contact;
+import com.tsz662.rest.models.v1.Contact;
 
 /**
  * JSONサンプル出力確認用。

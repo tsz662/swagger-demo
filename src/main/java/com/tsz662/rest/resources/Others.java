@@ -1,4 +1,4 @@
-package com.canon.tsz662.rest.resources;
+package com.tsz662.rest.resources;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
-import com.canon.tsz662.rest.exceptions.BadRequestAttemptException;
+import com.tsz662.rest.exceptions.BadRequestAttemptException;
 
 /**
  * 以下の出力テスト用

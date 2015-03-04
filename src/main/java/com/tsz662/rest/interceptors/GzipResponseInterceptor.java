@@ -1,4 +1,4 @@
-package com.canon.tsz662.rest.interceptors;
+package com.tsz662.rest.interceptors;
 
 import java.io.IOException;
 import java.io.OutputStream;

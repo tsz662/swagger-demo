@@ -1,4 +1,4 @@
-package com.canon.tsz662.rest.filters;
+package com.tsz662.rest.filters;
 
 import java.io.IOException;
 

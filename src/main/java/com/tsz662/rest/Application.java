@@ -1,14 +1,11 @@
-package com.canon.tsz662.rest;
-
-import java.util.HashMap;
-import java.util.Map;
+package com.tsz662.rest;
 
 import javax.ws.rs.ApplicationPath;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
-//@ApplicationPath("api")
+@ApplicationPath("api")
 public class Application extends ResourceConfig {
 
 	final String rootPackage = this.getClass().getPackage().getName();

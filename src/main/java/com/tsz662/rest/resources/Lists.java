@@ -1,16 +1,18 @@
-package com.canon.tsz662.rest.resources;
+package com.tsz662.rest.resources;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import com.canon.tsz662.rest.models.ContactsMap;
-import com.canon.tsz662.rest.models.v1.Contact;
+
+import com.tsz662.rest.models.ContactsMap;
+import com.tsz662.rest.models.v1.Contact;
 
 /**
  * Java8テスト

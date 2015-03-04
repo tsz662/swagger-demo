@@ -1,11 +1,11 @@
-package com.canon.tsz662.rest.exceptions.mappers;
+package com.tsz662.rest.exceptions.mappers;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import com.canon.tsz662.rest.exceptions.BadRequestAttemptException;
+import com.tsz662.rest.exceptions.BadRequestAttemptException;
 
 /**
  * BadRequestAttemptException時に400を返す。

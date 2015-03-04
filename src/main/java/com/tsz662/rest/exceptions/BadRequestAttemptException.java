@@ -1,4 +1,4 @@
-package com.canon.tsz662.rest.exceptions;
+package com.tsz662.rest.exceptions;
 
 public class BadRequestAttemptException extends RuntimeException {
 

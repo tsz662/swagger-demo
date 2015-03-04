@@ -1,4 +1,4 @@
-package com.canon.tsz662.rest.models.v1;
+package com.tsz662.rest.models.v1;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

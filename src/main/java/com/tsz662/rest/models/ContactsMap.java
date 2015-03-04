@@ -1,9 +1,9 @@
-package com.canon.tsz662.rest.models;
+package com.tsz662.rest.models;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.canon.tsz662.rest.models.v1.Contact;
+import com.tsz662.rest.models.v1.Contact;
 
 public class ContactsMap {
 

@@ -1,4 +1,4 @@
-package com.canon.tsz662.rest.resources;
+package com.tsz662.rest.resources;
 
 import java.util.Collection;
 import java.util.Map;
@@ -20,10 +20,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import com.canon.tsz662.rest.models.ContactsMap;
-import com.canon.tsz662.rest.models.v0.ErrorInfo;
-import com.canon.tsz662.rest.models.v0.JsonTest;
-import com.canon.tsz662.rest.models.v1.Contact;
+
+import com.tsz662.rest.models.ContactsMap;
+import com.tsz662.rest.models.v0.ErrorInfo;
+import com.tsz662.rest.models.v0.JsonTest;
+import com.tsz662.rest.models.v1.Contact;
 
 /**
  * Contactを扱うリソースクラス。
@@ -211,7 +212,7 @@ public class Contacts {
 	 * @param id 更新するContactのID
 	 * @param update アップデート情報
 	 * @responseMessage 501 非対応
-	 * @deprecated ボディには{@link com.canon.tsz662.rest.models.v1.Contact}を記述してください。
+	 * @deprecated ボディには{@link com.tsz662.rest.models.v1.Contact}を記述してください。
 	 * @version 0.9
 	 */
 	@PUT

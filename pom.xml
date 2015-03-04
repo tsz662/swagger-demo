@@ -26,42 +26,29 @@
     	<groupId>org.glassfish.jersey.media</groupId>
 	    <artifactId>jersey-media-json-jackson</artifactId>
 	    <version>[2.1,)</version>
-	</dependency>
-
-	<dependency>
-        <groupId>com.wordnik</groupId>
-        <artifactId>swagger-jersey-jaxrs_2.10</artifactId>
-         <version>[1.3,)</version>
-    </dependency>
-
-	<dependency>
-		<groupId>javax.servlet</groupId>
-		<artifactId>javax.servlet-api</artifactId>
-		<version>3.0.1</version>
-	</dependency>
-	
+	</dependency>	
   </dependencies>
 
   <build>
     <finalName>swaggerj8m</finalName>
     <plugins>
-      <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <version>2.4</version>
-          <configuration>
-              <failOnMissingWebXml>false</failOnMissingWebXml>
-          </configuration>      
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.0</version>
-        <configuration>
-           <source>1.8</source>
-           <target>1.8</target>
-        </configuration>
-	  </plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-war-plugin</artifactId>
+			<version>2.6</version>
+			<configuration>
+				<failOnMissingWebXml>false</failOnMissingWebXml>
+			</configuration>      
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.2</version>
+			<configuration>
+				<source>1.8</source>
+				<target>1.8</target>
+			</configuration>
+		</plugin>
 		<plugin>
 		  <groupId>org.eclipse.jetty</groupId>
 		  <artifactId>jetty-maven-plugin</artifactId>
@@ -72,34 +59,11 @@
 		  	</webApp>
 		  </configuration>
 		</plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-                <executions>
-                    <execution>
-                        <id>generate-service-docs</id>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <doclet>com.carma.swagger.doclet.ServiceDoclet</doclet>
-                            <docletArtifact>
-                                <groupId>com.carma</groupId>
-                                <artifactId>swagger-doclet</artifactId>
-                                <version>1.0.4.1</version>
-                            </docletArtifact>
-                            <reportOutputDirectory>${project.build.outputDirectory}</reportOutputDirectory>
-                            <useStandardDocletOptions>false</useStandardDocletOptions>
-                            <!-- docBasePath should be s3 site url. -->
-                            <additionalparam>-d swagger -apiVersion 1 -docBasePath http://localhost -apiBasePath api -responseMessageTags HTTP -responseMessageTags ResponseHeader</additionalparam>
-                        </configuration>
-                        <goals>
-                            <goal>javadoc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<version>[2.0,)</version>
+		</plugin>
     </plugins>
   </build>
   <packaging>war</packaging>

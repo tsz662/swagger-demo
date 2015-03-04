@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<div id="display" style="width:auto;min-height:100px;border:1px solid #000"></div>
+<form>
+	<input type="button" value="ボタン" onclick="getContacts()">
+</form>
+<script type="text/javascript">
+var display = document.getElementById("display");
+
+function getContacts() {
+	display.innerHTML = "";
+	
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener("load",function() {
+		if (xhr.status == 200) {
+			display.innerHTML = xhr.response;
+		}
+	});
+	xhr.open("GET", "api/contacts");
+	xhr.setRequestHeader("X-Powered-By","tsz662");
+	xhr.send();
+}
+</script>
+</body>
+</html>

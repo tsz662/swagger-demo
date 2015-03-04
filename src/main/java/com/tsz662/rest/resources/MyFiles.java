@@ -1,4 +1,4 @@
-package com.canon.tsz662.rest.resources;
+package com.tsz662.rest.resources;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,7 +28,7 @@ import javax.ws.rs.core.StreamingOutput;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import com.canon.tsz662.rest.interceptors.GzipResponse;
+import com.tsz662.rest.interceptors.GzipResponse;
 
 /**
  * 以下のテスト用
