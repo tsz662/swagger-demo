@@ -19,7 +19,7 @@ import javax.ws.rs.ext.Provider;
  *
  */
 @Provider
-@PreMatching
+//@PreMatching
 @Priority(Priorities.AUTHORIZATION)
 public class XPoweredByFilter implements ContainerRequestFilter{
 

@@ -25,6 +25,8 @@ import com.tsz662.rest.models.ContactsMap;
 import com.tsz662.rest.models.v0.ErrorInfo;
 import com.tsz662.rest.models.v0.JsonTest;
 import com.tsz662.rest.models.v1.Contact;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 /**
  * Contactを扱うリソースクラス。
@@ -34,6 +36,7 @@ import com.tsz662.rest.models.v1.Contact;
  */
 @SuppressWarnings("deprecation")
 @Path("contacts")
+@Api(value = "contacts", description = "Operations about contacts")
 public class Contacts {
 	
 	private final Map<Integer, Contact> contacts = ContactsMap.contacts;
@@ -46,6 +49,9 @@ public class Contacts {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Gets all contacts.",
+					responseContainer = "Collection",
+					response = Contact.class)
 	public Collection<Contact> getContacts() {
 		if (contacts.isEmpty()) {
 			throw new WebApplicationException(Status.NOT_FOUND);
