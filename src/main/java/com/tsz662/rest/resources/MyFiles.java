@@ -56,7 +56,7 @@ public class MyFiles {
 	 * @responseMessage 200 OK
 	 */
 	@POST
-	@Path("asmultipart")
+	@Path("multipart")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.TEXT_HTML)
 	public Response uploadFile(@FormDataParam("uploader") String uploader,

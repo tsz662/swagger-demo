@@ -2,9 +2,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.canon.tsz662</groupId>
-  <artifactId>swaggerj8m</artifactId>
+  <artifactId>swagger-demo</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>swaggerj8m Maven Webapp</name>
+  <name>Swagger Demo</name>
   <url>http://maven.apache.org</url>
 
   <dependencies>
@@ -39,7 +39,7 @@
   </dependencies>
 
   <build>
-    <finalName>swagger-sample-noannotated</finalName>
+    <finalName>swagger-demo</finalName>
     <plugins>
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
@@ -47,7 +47,6 @@
 			<version>2.6</version>
 			<configuration>
 				<failOnMissingWebXml>false</failOnMissingWebXml>
-				<warSourceDirectory>webapp</warSourceDirectory>
 			</configuration>      
 		</plugin>
 		<plugin>
@@ -65,7 +64,7 @@
 		  <version>9.3.0.M1</version>
 		  <configuration>
 		  	<webApp>
-				<contextPath>/swagger-sample-noannotated</contextPath>		  		
+				<contextPath>/swagger-demo</contextPath>		  		
 		  	</webApp>
 		  </configuration>
 		</plugin>

@@ -5,6 +5,11 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.Provider;
 
+/**
+ * XPoweredByFilterを動的に登録する為のクラス
+ * @author tsz662
+ *
+ */
 @Provider
 public class DynamicFilterRegisterer implements DynamicFeature {
 

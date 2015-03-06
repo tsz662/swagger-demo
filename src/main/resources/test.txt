@@ -1,0 +1,48 @@
+■ArrayBuffer 応答
+ArrayBuffer は、バイナリ データ用の固定長コンテナです。
+未処理データの汎用バッファが必要な場合にとても重宝します。
+しかし、隠れた本当の価値は、JavaScript タイプの配列を使って基になるデータの「ビュー」を作成できることです。
+実際に、単一の ArrayBuffer ソースから複数のビューを作成できます。
+たとえば、既存の 32 ビット整数配列と同じデータから 8 ビットの整数配列を作成し、同じ ArrayBuffer を共有できます。
+基になるデータは同じまま残り、単にそのデータの異なる複数の表現を作成するだけです。
+例として、次のコードは同じ画像を ArrayBuffer として取得しますが、そのデータ バッファから今度は符号なし 8 ビット整数配列を作成します。
+
+var xhr = new XMLHttpRequest();
+xhr.open('GET', '/path/to/image.png', true);
+xhr.responseType = 'arraybuffer';
+
+xhr.onload = function(e) {
+  var uInt8Array = new Uint8Array(this.response); // this.response == uInt8Array.buffer
+  // var byte3 = uInt8Array[4]; // byte at offset 4
+  ...
+};
+
+xhr.send();
+
+■Blob 応答
+
+Blob を直接操作し、ファイルのバイトを操作する必要がない場合は、xhr.responseType='blob' を使用します。
+Blob はいろいろな場所で使用できます。
+indexedDB への保存、HTML5 のファイル システムへの書き込み、Blob URL の作成などができます。
+
+window.URL = window.URL || window.webkitURL;  // Take care of vendor prefixes.
+
+var xhr = new XMLHttpRequest();
+xhr.open('GET', '/path/to/image.png', true);
+xhr.responseType = 'blob';
+
+xhr.onload = function(e) {
+  if (this.status == 200) {
+    var blob = this.response;
+
+    var img = document.createElement('img');
+    img.onload = function(e) {
+      window.URL.revokeObjectURL(img.src); // Clean up after yourself.
+    };
+    img.src = window.URL.createObjectURL(blob);
+    document.body.appendChild(img);
+    ...
+  }
+};
+
+xhr.send();

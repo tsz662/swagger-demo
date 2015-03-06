@@ -27,6 +27,8 @@ import com.tsz662.rest.models.v0.JsonTest;
 import com.tsz662.rest.models.v1.Contact;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponses;
+import com.wordnik.swagger.annotations.ApiResponse;
 
 /**
  * Contactを扱うリソースクラス。
@@ -36,7 +38,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
  */
 @SuppressWarnings("deprecation")
 @Path("contacts")
-@Api(value = "contacts", description = "Operations about contacts")
+@Api(value = "contacts", description = "Contactリソース")
 public class Contacts {
 	
 	private final Map<Integer, Contact> contacts = ContactsMap.contacts;
@@ -49,9 +51,10 @@ public class Contacts {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Gets all contacts.",
-					responseContainer = "Collection",
-					response = Contact.class)
+	@ApiOperation(value = "登録済みContact全員を返す。",
+		responseContainer = "Collection",
+		response = Contact.class)
+	@ApiResponse(code = 404, message = "Contactが未登録")
 	public Collection<Contact> getContacts() {
 		if (contacts.isEmpty()) {
 			throw new WebApplicationException(Status.NOT_FOUND);
@@ -71,6 +74,13 @@ public class Contacts {
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "指定されたIDのContactを返す。",
+		notes = "エラー時、詳細情報はレスポンスボディで返す。",
+		response = Contact.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = 404, message = "指定されたIDのContactがいない", response = ErrorInfo.class),
+		@ApiResponse(code = 500, message = "サーバーエラー", response = ErrorInfo.class)
+	})
 	public Contact getContact(@PathParam("id") int id) {
 		try {
 			if (id <= contacts.size()) {
@@ -105,6 +115,12 @@ public class Contacts {
 	@GET
 	@Path("{id}/attrib")
 	@Produces(MediaType.TEXT_PLAIN)
+	@ApiOperation(value = "Contactの指定された情報を返す。")
+	@ApiResponses(value = {
+		@ApiResponse(code = 400, message = "不正なリクエスト"),
+		@ApiResponse(code = 403, message = "クッキーがない"),
+		@ApiResponse(code = 400, message = "指定されたIDのContactがいない")
+	})
 	public String getContactInfo(@PathParam("id") int id, @CookieParam("hoge") String cookie, @QueryParam("field") String attrib) {
 		
 		if (cookie != null) {
@@ -139,11 +155,12 @@ public class Contacts {
 	
 	/**
 	 * Contactを新規作成する。
+	 * ※Swaggerでレスポンスヘッダを記述するアノテーションがない！？
 	 * @param auth 認証トークン文字列
 	 * @param csrf CSRFトークン文字列
 	 * @param contact 登録するContactの情報
 	 * @param uriInfo リクエストのURI情報
-	 * @ResponseHeader Location 新規作成されたContactリソースのリンク(効かない)
+	 * @ResponseHeader Location 新規作成されたContactリソースのリンク
 	 * @return 結果のJSON
 	 * @responseMessage 201 Contactが登録された
 	 * @responseMessage 400 不正リクエスト
@@ -151,6 +168,10 @@ public class Contacts {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Contactを新規作成する。",
+		notes = "Locationヘッダで新規作成されたContactリソースのリンクを返す",
+		response = Map.class)
+	@ApiResponse(code = 400, message = "不正なリクエスト")
 	public Response createContact(@HeaderParam("X-Auth") String auth, @HeaderParam("X-CSRF") String csrf, @Context UriInfo uriInfo,Contact contact) {
 		
 		if (!auth.equals("foo") || !csrf.equals("bar")) {

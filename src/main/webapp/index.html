@@ -2,30 +2,137 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-
-<div id="display" style="width:auto;min-height:100px;border:1px solid #000"></div>
-<form>
-	<input type="button" value="ボタン" onclick="getContacts()">
-</form>
-<script type="text/javascript">
-var display = document.getElementById("display");
-
-function getContacts() {
-	display.innerHTML = "";
-	
-	var xhr = new XMLHttpRequest();
-	xhr.addEventListener("load",function() {
-		if (xhr.status == 200) {
-			display.innerHTML = xhr.response;
-		}
-	});
-	xhr.open("GET", "api/contacts");
-	xhr.setRequestHeader("X-Powered-By","tsz662");
-	xhr.send();
+<title>Swagger Demo</title>
+<style type="text/css">
+div#contacts, div#contenttype {
+	background: #eee;
+	min-height: 50px; 
+	border: 1px solid #000;
+	margin-bottom: 10px;
+	padding: 5px;
 }
-</script>
+div[id$="Result"] {
+	background: #eee;
+	color: red;
+	border: 1px dashed #ccc;
+	margin: 5px 0 10px 5px;
+	border-radius: 5px;
+	padding: 5px;
+	font-size: 0.9em;
+}
+</style>
+</head>
+
+<body>
+<h1>Swagger Demo</h1>
+<form name="common">
+	<input type="checkbox" id="xpoweredby" name="xpoweredby" checked="checked">
+	<label for="xpoweredby">X-Powered-Byヘッダを送るか(外すと全リクエストがエラー)</label>
+</form>
+
+<h2>Contactsリソース</h2>
+<div id="contacts"></div>
+<div>
+<button onclick="getContacts()">getContacts</button>
+
+<form>
+	<fieldset>
+		<legend>getContact</legend>
+		<label for="gid">id: </label><input type="text" id="gid" name="id">
+		<input type="button" onclick="getContact(this.form.id.value)" value="getContact">
+	</fieldset>
+</form>
+<div id="getContactResult"></div>
+
+<form>
+	<fieldset>
+		<legend>getContactInfo</legend>
+		<label for="gid">id: </label><input type="text" id="gid" name="id">
+		<label for="gattr">属性 </label><select name="attr" id="gattr"><option value="name">name</option><option value="address">address</option></select>
+		<label for="gcookie">Cookie </label><select name="cookie" id="gcookie"><option value="foobar">OK</option><option value="hogehoge">NG</option></select>
+		<input type="button" onclick="getContactInfo(this.form.id.value, this.form.attr.value, this.form.cookie.value)" value="getContactInfo">
+	</fieldset>
+</form>
+<div id="getContactInfoResult"></div>
+
+<form>
+	<fieldset>
+		<legend>createContact</legend>
+		<label for="cname">name: </label><input type="text" id="cname" name="name">
+		<label for="caddress">address: </label><input type="text" id="caddress" name="address">
+		<label for="caddh"></label>X-Auth/X-CSRFヘッダをつける(つけないと400)<input type="checkbox" name="addCustomHeaders" id="caddh">
+		<input type="button" onclick="createContact(this.form.name.value, this.form.address.value, this.form.addCustomHeaders.checked)" value="createContact">
+	</fieldset>
+</form>
+<div id="createContactResult"></div>
+
+<form>
+	<fieldset>
+		<legend>updateContact</legend>
+		<label for="uid">id: </label><input type="text" id="uid" name="id">
+		<label for="uname">name: </label><input type="text" id="uname" name="name">
+		<label for="uaddress">address: </label><input type="text" id="uaddress" name="address">
+		<input type="button" onclick="updateContact(this.form.id.value, this.form.name.value, this.form.address.value)" value="updateContact">
+	</fieldset>
+</form>
+<div id="updateContactResult"></div>
+
+<form>
+	<fieldset>
+		<legend>deleteContact</legend>
+		<label for="did">id: </label><input type="text" id="did" name="id">
+		<input type="button" onclick="deleteContact(this.form.id.value)" value="deleteContact">
+	</fieldset>
+</form>
+<div id="deleteContactResult"></div>
+</div>
+
+<h2>Filesリソース</h2>
+<div id="uploadFileResult"></div>
+<form>
+	<fieldset>
+		<legend>Multipart(ファイルアップロード)のテスト</legend>
+		<label for="uploader">うp主名入力</label><input type="text" name="uploader" id="uploader" placeholder="うp主名">
+		<label for="selectfile">ファイル1つ選択</label><input type="file" name="file" id="selectfile">
+		<input type="button" value="Multipartテスト"  onclick="uploadFiles(this.form)">
+	</fieldset>
+</form>
+<div id="uploadFileResult"></div>
+<form>
+	<fieldset>
+		<legend>画像取得テスト</legend>
+		<select name="image"><option value="kittens.jpg">kittens.jpg</option></select>
+		<select name="responseType"><option value="arraybuffer">ArrayBuffer</option><option value="blob">Blob</option></select>
+		<input type="button" value="getImage"  onclick="getImage(this.form.image.value, this.form.responseType.value)">
+	</fieldset>
+</form>
+<div id="getImageResult"></div>
+<form>
+	<fieldset>
+		<legend>StreamingOutputテスト(テキストファイルの中身取得)</legend>
+		<input type="button" value="testStreamingOutput"  onclick="testStreamingOutput()">
+	</fieldset>
+</form>
+<div id="testStreamingOutputResult"></div>
+
+<h2>Othersリソース</h2>
+<form>
+	<fieldset>
+		<legend>ExceptionMapperテスト(400が返ればOK)</legend>
+		<input type="button" onclick="exmapperTest()" value="ExceptionMapperテスト">
+	</fieldset>
+</form>
+<div id=exmapperTestResult></div>
+<form>
+	<fieldset>
+		<legend>FORM送信(入力文字列のエコー)</legend>
+		<input type="text" name="input" placeholder="何か文字列">
+		<input type="button" value="FORM送信" onclick="echoThis(this.form.input.value)">
+	</fieldset>
+</form>
+<div id="echoResult"></div>
+
+<script type="text/javascript" src="util.js"></script>
+<script type="text/javascript" src="main.js"></script>
 </body>
 </html>
