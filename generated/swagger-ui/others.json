@@ -1,0 +1,90 @@
+{
+  "apiVersion" : "1.0",
+  "swaggerVersion" : "1.2",
+  "basePath" : "http://localhost:8080/swagger-demo",
+  "resourcePath" : "/others",
+  "apis" : [ {
+    "path" : "/othersform",
+    "operations" : [ {
+      "method" : "POST",
+      "summary" : "FormParamアノテーションテスト用",
+      "notes" : "",
+      "type" : "void",
+      "nickname" : "testFormParam",
+      "produces" : [ "text/plain" ],
+      "consumes" : [ "application/x-www-form-urlencoded" ],
+      "parameters" : [ {
+        "name" : "input",
+        "description" : "FormParamアノテーションテスト用",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "form",
+        "allowMultiple" : false
+      } ],
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "成功"
+      } ]
+    } ]
+  }, {
+    "path" : "/otherscontext",
+    "operations" : [ {
+      "method" : "GET",
+      "summary" : "Contextアノテーションテスト用",
+      "notes" : "",
+      "type" : "void",
+      "nickname" : "testContext",
+      "produces" : [ "text/plain" ],
+      "parameters" : [ ],
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "成功"
+      } ]
+    } ]
+  }, {
+    "path" : "/othersmatrixparam",
+    "operations" : [ {
+      "method" : "GET",
+      "summary" : "MatrixParamアノテーションテスト用",
+      "notes" : "",
+      "type" : "void",
+      "nickname" : "testMatrixParam",
+      "parameters" : [ {
+        "name" : "page",
+        "description" : "本のページ番号",
+        "defaultValue" : "0",
+        "required" : true,
+        "type" : "integer",
+        "format" : "int32",
+        "paramType" : "matrix",
+        "allowMultiple" : false
+      }, {
+        "name" : "filter",
+        "description" : "検索ワード",
+        "defaultValue" : "none",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "matrix",
+        "allowMultiple" : false
+      } ],
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "成功"
+      } ]
+    } ]
+  }, {
+    "path" : "/others",
+    "operations" : [ {
+      "method" : "POST",
+      "summary" : "ExceptionMapperテスト用。パラメータも戻りもなし。",
+      "notes" : "",
+      "type" : "void",
+      "nickname" : "noProduceAnnotation",
+      "parameters" : [ ],
+      "responseMessages" : [ {
+        "code" : 404,
+        "message" : "不正リクエスト"
+      } ]
+    } ]
+  } ]
+}

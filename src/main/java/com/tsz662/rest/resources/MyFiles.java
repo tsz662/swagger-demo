@@ -29,6 +29,9 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.tsz662.rest.interceptors.GzipResponse;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 
 /**
  * 以下のテスト用
@@ -45,6 +48,7 @@ import com.tsz662.rest.interceptors.GzipResponse;
  *
  */
 @Path("files")
+@Api(value = "files", description = "ファイル関連のリソース")
 public class MyFiles {
 
 	/**
@@ -53,14 +57,22 @@ public class MyFiles {
 	 * @param file アップロードされたファイル(InputStream)
 	 * @param contentDispositionHeader Content-Dispositionヘッダ
 	 * @return うp主名とContent-Dispositionヘッダから取れる情報
-	 * @responseMessage 200 OK
+	 * @HTTP 200 OK
 	 */
 	@POST
 	@Path("multipart")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.TEXT_HTML)
-	public Response uploadFile(@FormDataParam("uploader") String uploader,
+	@ApiOperation(
+		value = "アップロードされたファイルの情報等を返す。",
+		position = 1
+	)
+	public Response uploadFile(
+			@ApiParam(value = "うp主名", required = true)
+			@FormDataParam("uploader") String uploader,
+			@ApiParam(value = "アップロードされたファイル(InputStream)", required = true)
 			@FormDataParam("file") InputStream file,
+			@ApiParam(value = "Content-Dispositionヘッダ")
 			@FormDataParam("file") FormDataContentDisposition contentDispositionHeader) {
 		
 		final String LR = "<br>";
@@ -86,13 +98,19 @@ public class MyFiles {
 	 * StreamingOutputのテスト
 	 * @return test.txtの内容
 	 * @ResponseHeader Content-Encoding utf-8
-	 * @responseMessage 200 OK
-	 * @responseMessage 500 サーバーエラー
+	 * @HTTP 200 OK
+	 * @HTTP 500 サーバーエラー
 	 */
 	@GET
 	@Path("streamingoutput")
 	@Produces(MediaType.TEXT_PLAIN)
 	@GzipResponse
+	@ApiOperation(
+		value = "StreamingOutputのテスト",
+		position = 2,
+		notes = "gzip圧縮して返す",
+		response = StreamingOutput.class
+	)
 	public Response testStreamingOutput() {
 		StreamingOutput stream = new StreamingOutput() {
 			@Override
@@ -123,15 +141,24 @@ public class MyFiles {
 	 * @param filename 取得ファイル名
 	 * @return 指定されたファイルの中身
 	 * @ResponseHeader Transfer-Encoding chunked
-	 * @responseMessage 200 OK
-	 * @responseMessage 400 リクエストのレスポンスタイプがBlobかArrayBuffer以外
-	 * @responseMessage 500 指定ファイルがない/開けない
+	 * @HTTP 200 OK
+	 * @HTTP 400 リクエストのレスポンスタイプがBlobかArrayBuffer以外
+	 * @HTTP 500 指定ファイルがない/開けない
 	 */
 	@GET
 	@Path("images")
 	@Produces("image/jpeg")
 	@GzipResponse
-	public Response getImage(@QueryParam("responseType") final String responseType,
+	@ApiOperation(
+		value = "指定された画像ファイルの中身をGZIPして返却する。",
+		position = 3,
+		notes = "gzip圧縮して返す",
+		response = File.class
+	)
+	public Response getImage(
+			@ApiParam(value = "responseType blob(File)かarraybuffer(InputStream)", required = true)
+			@QueryParam("responseType") final String responseType,
+			@ApiParam(value = "取得ファイル名", required = true)
 			@QueryParam("filename") final String filename) {
 		
 		try(final InputStream in = this.getClass().getClassLoader().getResourceAsStream(filename)) {

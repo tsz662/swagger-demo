@@ -27,6 +27,7 @@ import com.tsz662.rest.models.v0.JsonTest;
 import com.tsz662.rest.models.v1.Contact;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponses;
 import com.wordnik.swagger.annotations.ApiResponse;
 
@@ -36,9 +37,10 @@ import com.wordnik.swagger.annotations.ApiResponse;
  * @version 1.0
  * @author tsz662
  */
+// Swagger @ApiParam supports: @PathParam, @QueryParam, @HeaderParam, @FormParam, @BeanParam
 @SuppressWarnings("deprecation")
 @Path("contacts")
-@Api(value = "contacts", description = "Contactリソース")
+@Api(value = "contacts", description = "Contact関連のリソース")
 public class Contacts {
 	
 	private final Map<Integer, Contact> contacts = ContactsMap.contacts;
@@ -46,15 +48,20 @@ public class Contacts {
 	/**
 	 * 登録済みContact全員を返す。
 	 * @return 登録済みContactリスト
-	 * @responseMessage 200 成功 `Collection<com.canon.tsz662.rest.models.v1.Contact>
-	 * @responseMessage 404 Contactが未登録
+	 * @HTTP 200 成功 Collection<com.canon.tsz662.rest.models.v1.Contact>
+	 * @HTTP 404 Contactが未登録
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "登録済みContact全員を返す。",
-		responseContainer = "Collection",
-		response = Contact.class)
-	@ApiResponse(code = 404, message = "Contactが未登録")
+		position = 1,
+		responseContainer = "List",
+		response = Contact.class
+	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "成功"),
+		@ApiResponse(code = 404, message = "Contactが未登録")
+	})
 	public Collection<Contact> getContacts() {
 		if (contacts.isEmpty()) {
 			throw new WebApplicationException(Status.NOT_FOUND);
@@ -67,21 +74,25 @@ public class Contacts {
 	 * 指定されたIDのContactを返す。
 	 * @param id 取得したいContactのID
 	 * @return 指定されたIDのContact情報
-	 * @responseMessage 200 成功 `com.canon.tsz662.rest.models.v1.Contact
-	 * @responseMessage 404 指定されたIDのContactがいない `com.canon.tsz662.rest.models.v0.ErrorInfo
-	 * @responseMessage 500 サーバーエラー `com.canon.tsz662.rest.models.v0.ErrorInfo
+	 * @HTTP 200 成功 com.canon.tsz662.rest.models.v1.Contact
+	 * @HTTP 404 指定されたIDのContactがいない com.canon.tsz662.rest.models.v0.ErrorInfo
+	 * @HTTP 500 サーバーエラー com.canon.tsz662.rest.models.v0.ErrorInfo
 	 */
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "指定されたIDのContactを返す。",
+		position = 3,
 		notes = "エラー時、詳細情報はレスポンスボディで返す。",
-		response = Contact.class)
+		response = Contact.class
+	)
 	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "成功", response = Contact.class),
 		@ApiResponse(code = 404, message = "指定されたIDのContactがいない", response = ErrorInfo.class),
 		@ApiResponse(code = 500, message = "サーバーエラー", response = ErrorInfo.class)
 	})
-	public Contact getContact(@PathParam("id") int id) {
+	public Contact getContact(
+			@ApiParam(value = "取得したいContactのID", required = true) @PathParam("id") int id) {
 		try {
 			if (id <= contacts.size()) {
 				Contact contact = contacts.get(id);
@@ -106,22 +117,29 @@ public class Contacts {
 	 * @param cookie "hoge"クッキーの値
 	 * @param attrib 取得したい属性
 	 * @return 指定された属性情報
-	 * @responseMessage 200 OK
-	 * @responseMessage 400 不正リクエスト
-	 * @responseMessage 403 クッキーがない
-	 * @responseMessage 404 指定されたIDのContactがいない
+	 * @HTTP 200 OK
+	 * @HTTP 400 不正リクエスト
+	 * @HTTP 403 クッキーがない
+	 * @HTTP 404 指定されたIDのContactがいない
 	 * @since 1.0
 	 */
 	@GET
 	@Path("{id}/attrib")
 	@Produces(MediaType.TEXT_PLAIN)
-	@ApiOperation(value = "Contactの指定された情報を返す。")
+	@ApiOperation(
+		value = "Contactの指定された情報を返す。", 
+		position = 4
+	)
 	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "成功"),
 		@ApiResponse(code = 400, message = "不正なリクエスト"),
 		@ApiResponse(code = 403, message = "クッキーがない"),
-		@ApiResponse(code = 400, message = "指定されたIDのContactがいない")
+		@ApiResponse(code = 404, message = "指定されたIDのContactがいない")
 	})
-	public String getContactInfo(@PathParam("id") int id, @CookieParam("hoge") String cookie, @QueryParam("field") String attrib) {
+	public String getContactInfo(
+			@ApiParam(value = "属性を取得したいContactのID", required = true) @PathParam("id") int id,
+			@ApiParam(value = "hogeクッキーの値", required = true) @CookieParam("hoge") String cookie,
+			@ApiParam(value = "取得したい属性", required = true) @QueryParam("field") String attrib) {
 		
 		if (cookie != null) {
 			if (!cookie.equals("foobar")) {
@@ -162,16 +180,23 @@ public class Contacts {
 	 * @param uriInfo リクエストのURI情報
 	 * @ResponseHeader Location 新規作成されたContactリソースのリンク
 	 * @return 結果のJSON
-	 * @responseMessage 201 Contactが登録された
-	 * @responseMessage 400 不正リクエスト
+	 * @HTTP 201 Contactが登録された
+	 * @HTTP 400 不正リクエスト
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Contactを新規作成する。",
+	@ApiOperation(
+		value = "Contactを新規作成する。",
 		notes = "Locationヘッダで新規作成されたContactリソースのリンクを返す",
-		response = Map.class)
-	@ApiResponse(code = 400, message = "不正なリクエスト")
+		position = 2,
+		response = String.class,
+		responseContainer = "Map"
+	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 201, message = "作成成功"),
+		@ApiResponse(code = 400, message = "不正なリクエスト")
+	})
 	public Response createContact(@HeaderParam("X-Auth") String auth, @HeaderParam("X-CSRF") String csrf, @Context UriInfo uriInfo,Contact contact) {
 		
 		if (!auth.equals("foo") || !csrf.equals("bar")) {
@@ -198,16 +223,29 @@ public class Contacts {
 	 * @param id 更新するContactのID
 	 * @param update 更新するContactの情報
 	 * @return 更新されたContact情報
-	 * @responseMessage 200 更新成功 `com.canon.tsz662.rest.models.v1.Contact
-	 * @responseMessage 404 指定されたIDのContactがいない `com.canon.tsz662.rest.models.v0.ErrorInfo
-	 * @responseMessage 500 サーバーエラー `com.canon.tsz662.rest.models.v0.ErrorInfo
+	 * @HTTP 200 更新成功 com.canon.tsz662.rest.models.v1.Contact
+	 * @HTTP 404 指定されたIDのContactがいない com.canon.tsz662.rest.models.v0.ErrorInfo
+	 * @HTTP 500 サーバーエラー com.canon.tsz662.rest.models.v0.ErrorInfo
 	 * @since 1.0
 	 */
 	@PUT
 	@Path("{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateContact(@PathParam("id") int id, Contact update) {
+	@ApiOperation(
+		value = "指定されたIDのContactを更新する。",
+		position = 5,
+		response = Contact.class
+	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "指定されたIDのContact", response = Contact.class),
+		@ApiResponse(code = 404, message = "指定されたIDのContactがいない", response = ErrorInfo.class),
+		@ApiResponse(code = 400, message = "サーバーエラー", response = ErrorInfo.class)
+	})
+	public Response updateContact(
+			@ApiParam(value="更新するContactのID", required = true)
+			@PathParam("id") int id,
+			Contact update) {
 		ErrorInfo eInfo;
 
 		try {
@@ -238,7 +276,7 @@ public class Contacts {
 	 * 指定されたIDのContactを更新する。
 	 * @param id 更新するContactのID
 	 * @param update アップデート情報
-	 * @responseMessage 501 非対応
+	 * @HTTP 501 非対応
 	 * @deprecated ボディには{@link com.tsz662.rest.models.v1.Contact}を記述してください。
 	 * @version 0.9
 	 */
@@ -254,13 +292,22 @@ public class Contacts {
 	 * 指定されたIDのContactを削除する。
 	 * @param id 削除するContactのID
 	 * @return なし
-	 * @responseMessage 204 削除成功
-	 * @responseMessage 404 指定されたIDのContactがいない `java.lang.String
-	 * @responseMessage 500 サーバーエラー
+	 * @HTTP 204 削除成功
+	 * @HTTP 404 指定されたIDのContactがいない java.lang.String
+	 * @HTTP 500 サーバーエラー
 	 */
 	@DELETE
 	@Path("{id}")
-	public Response deleteContact(@PathParam("id") int id) {
+	@ApiOperation(
+		value = "指定されたIDのContactを削除する。", 
+		position = 6
+	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 204, message = "削除成功"),
+		@ApiResponse(code = 404, message = "指定されたIDのContactがいない"),
+		@ApiResponse(code = 400, message = "サーバーエラー")
+	})
+	public Response deleteContact(@ApiParam(value = "削除するContactのID", required = true) @PathParam("id") int id) {
 		try {
 			if (Integer.valueOf(id) <= contacts.size()) {
 				contacts.remove(id);

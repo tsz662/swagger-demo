@@ -12,8 +12,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.tsz662.rest.exceptions.BadRequestAttemptException;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
+import com.wordnik.swagger.model.ResponseMessage;
 
 /**
  * 以下の出力テスト用
@@ -29,27 +36,29 @@ import com.tsz662.rest.exceptions.BadRequestAttemptException;
  * @author tsz662
  */
 @Path("others")
+@Api(value = "others", description = "その他(ExceptionMapperとかFormとか)実験用リソース")
 public class Others {
 	
-	/**
-	 * ExceptionMapperテスト用。パラメータも戻りもなし。
-	 */
-	@POST
-	public void noProduceAnnotation() {
-		throw new BadRequestAttemptException();
-	}
-
 	/**
 	 * FormParamアノテーションテスト用
 	 * @param input 入力された文字列
 	 * @return 「入力した文字列は{input}」という文字列
-	 * @responseMessage 200 OK
+	 * @HTTP 200 OK
 	 */
 	@POST
 	@Path("form")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response testFormParam(@FormParam("input") String input) {
+	@ApiOperation(
+		value = "FormParamアノテーションテスト用",
+		position = 1
+	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "成功")
+	})
+	public Response testFormParam(
+			@ApiParam(value = "FormParamアノテーションテスト用", required = true)
+			@FormParam("input") String input) {
 		return Response.ok().entity("入力した文字列は" + input).build();
 	}
 	
@@ -57,12 +66,21 @@ public class Others {
 	 * Contextアノテーションテスト用
 	 * @param req リクエスト
 	 * @return リクエストのメソッド
-	 * @responseMessage 200 OK
+	 * @HTTP 200 OK
 	 */
 	@GET
 	@Path("context")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String testContext(@Context Request req) {
+	@ApiOperation(
+		value = "Contextアノテーションテスト用",
+		position = 2
+	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "成功")
+	})
+	public String testContext(
+			@ApiParam(value = "リクエスト(@Context)", name = "req")
+			@Context Request req) {
 		return req.getMethod();
 	}
 	
@@ -74,12 +92,37 @@ public class Others {
 	 * @param filter 検索ワード
 	 * @return "ok"の文字列
 	 * @returnType java.lang.String
-	 * @responseMessage 200 OK
+	 * @HTTP 200 OK
 	 */
 	@GET
 	@Path("matrixparam")
-	public Response testMatrixParam(@DefaultValue(value = "0") @MatrixParam("page") int page, @DefaultValue(value = "none") @MatrixParam("filter") String filter) {
+	@ApiOperation(
+		value = "MatrixParamアノテーションテスト用",
+		position = 3
+	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "成功")
+	})
+	public Response testMatrixParam(
+			@ApiParam(value = "本のページ番号", required = true)
+			@DefaultValue(value = "0") @MatrixParam("page") int page, 
+			@ApiParam(value = "検索ワード", required = true)
+			@DefaultValue(value = "none") @MatrixParam("filter") String filter) {
 		return Response.ok().entity("ok").build();
 	}
-	
+
+	/**
+	 * ExceptionMapperテスト用。パラメータも戻りもなし。
+	 */
+	@POST
+	@ApiOperation(
+		value = "ExceptionMapperテスト用。パラメータも戻りもなし。",
+		position = 4
+	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 404, message = "不正リクエスト")
+	})
+	public void noProduceAnnotation() {
+		throw new BadRequestAttemptException();
+	}
 }

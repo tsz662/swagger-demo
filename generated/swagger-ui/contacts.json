@@ -1,0 +1,232 @@
+{
+  "apiVersion" : "1.0",
+  "swaggerVersion" : "1.2",
+  "basePath" : "http://localhost:8080/swagger-demo",
+  "resourcePath" : "/contacts",
+  "apis" : [ {
+    "path" : "/contacts",
+    "operations" : [ {
+      "method" : "GET",
+      "summary" : "登録済みContact全員を返す。",
+      "notes" : "",
+      "type" : "array",
+      "items" : {
+        "$ref" : "Contact"
+      },
+      "nickname" : "getContacts",
+      "produces" : [ "application/json" ],
+      "parameters" : [ ],
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "成功"
+      }, {
+        "code" : 404,
+        "message" : "Contactが未登録"
+      } ]
+    }, {
+      "method" : "POST",
+      "summary" : "Contactを新規作成する。",
+      "notes" : "Locationヘッダで新規作成されたContactリソースのリンクを返す",
+      "items" : {
+        "type" : "string"
+      },
+      "nickname" : "createContact",
+      "produces" : [ "application/json" ],
+      "consumes" : [ "application/json" ],
+      "parameters" : [ {
+        "name" : "X-Auth",
+        "required" : false,
+        "type" : "string",
+        "paramType" : "header",
+        "allowMultiple" : false
+      }, {
+        "name" : "X-CSRF",
+        "required" : false,
+        "type" : "string",
+        "paramType" : "header",
+        "allowMultiple" : false
+      }, {
+        "name" : "body",
+        "required" : false,
+        "type" : "Contact",
+        "paramType" : "body",
+        "allowMultiple" : false
+      } ],
+      "responseMessages" : [ {
+        "code" : 201,
+        "message" : "作成成功"
+      }, {
+        "code" : 400,
+        "message" : "不正なリクエスト"
+      } ]
+    } ]
+  }, {
+    "path" : "/contacts{id}",
+    "operations" : [ {
+      "method" : "GET",
+      "summary" : "指定されたIDのContactを返す。",
+      "notes" : "エラー時、詳細情報はレスポンスボディで返す。",
+      "type" : "Contact",
+      "nickname" : "getContact",
+      "produces" : [ "application/json" ],
+      "parameters" : [ {
+        "name" : "id",
+        "description" : "取得したいContactのID",
+        "required" : true,
+        "type" : "integer",
+        "format" : "int32",
+        "paramType" : "path",
+        "allowMultiple" : false
+      } ],
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "成功",
+        "responseModel" : "Contact"
+      }, {
+        "code" : 404,
+        "message" : "指定されたIDのContactがいない",
+        "responseModel" : "ErrorInfo"
+      }, {
+        "code" : 500,
+        "message" : "サーバーエラー",
+        "responseModel" : "ErrorInfo"
+      } ]
+    }, {
+      "method" : "PUT",
+      "summary" : "指定されたIDのContactを更新する。",
+      "notes" : "",
+      "type" : "Contact",
+      "nickname" : "updateContact",
+      "produces" : [ "application/json" ],
+      "consumes" : [ "application/json" ],
+      "parameters" : [ {
+        "name" : "id",
+        "description" : "更新するContactのID",
+        "required" : true,
+        "type" : "integer",
+        "format" : "int32",
+        "paramType" : "path",
+        "allowMultiple" : false
+      }, {
+        "name" : "body",
+        "required" : false,
+        "type" : "Contact",
+        "paramType" : "body",
+        "allowMultiple" : false
+      } ],
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "指定されたIDのContact",
+        "responseModel" : "Contact"
+      }, {
+        "code" : 404,
+        "message" : "指定されたIDのContactがいない",
+        "responseModel" : "ErrorInfo"
+      }, {
+        "code" : 400,
+        "message" : "サーバーエラー",
+        "responseModel" : "ErrorInfo"
+      } ]
+    }, {
+      "method" : "DELETE",
+      "summary" : "指定されたIDのContactを削除する。",
+      "notes" : "",
+      "type" : "void",
+      "nickname" : "deleteContact",
+      "parameters" : [ {
+        "name" : "id",
+        "description" : "削除するContactのID",
+        "required" : true,
+        "type" : "integer",
+        "format" : "int32",
+        "paramType" : "path",
+        "allowMultiple" : false
+      } ],
+      "responseMessages" : [ {
+        "code" : 204,
+        "message" : "削除成功"
+      }, {
+        "code" : 404,
+        "message" : "指定されたIDのContactがいない"
+      }, {
+        "code" : 400,
+        "message" : "サーバーエラー"
+      } ]
+    } ]
+  }, {
+    "path" : "/contacts{id}/attrib",
+    "operations" : [ {
+      "method" : "GET",
+      "summary" : "Contactの指定された情報を返す。",
+      "notes" : "",
+      "type" : "void",
+      "nickname" : "getContactInfo",
+      "produces" : [ "text/plain" ],
+      "parameters" : [ {
+        "name" : "id",
+        "description" : "属性を取得したいContactのID",
+        "required" : true,
+        "type" : "integer",
+        "format" : "int32",
+        "paramType" : "path",
+        "allowMultiple" : false
+      }, {
+        "name" : "hoge",
+        "description" : "hogeクッキーの値",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "cookie",
+        "allowMultiple" : false
+      }, {
+        "name" : "field",
+        "description" : "取得したい属性",
+        "required" : true,
+        "type" : "string",
+        "paramType" : "query",
+        "allowMultiple" : false
+      } ],
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "成功"
+      }, {
+        "code" : 400,
+        "message" : "不正なリクエスト"
+      }, {
+        "code" : 403,
+        "message" : "クッキーがない"
+      }, {
+        "code" : 404,
+        "message" : "指定されたIDのContactがいない"
+      } ]
+    } ]
+  } ],
+  "models" : {
+    "Contact" : {
+      "id" : "Contact",
+      "description" : "Contactsリソースで扱われるモデル",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "address" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ErrorInfo" : {
+      "id" : "ErrorInfo",
+      "properties" : {
+        "error" : {
+          "type" : "string"
+        },
+        "error_description" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}
