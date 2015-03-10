@@ -13,12 +13,6 @@
         <!-- Servlet コンテナのバージョンが 3.0 より古い場合は "jersey-container-servlet-core" を指定する -->
         <artifactId>jersey-container-servlet</artifactId>
         <version>[2.1,)</version>
-        <exclusions>
-        	<exclusion>
-        		<artifactId>jersey-container-servlet-core</artifactId>
-        		<groupId>org.glassfish.jersey.containers</groupId>
-        	</exclusion>
-        </exclusions>
     </dependency>
 
 	<!-- multipart -->
@@ -34,20 +28,36 @@
 	    <version>[2.1,)</version>
 	</dependency>	
 
-	<!-- Do not use swagger-jersey2-jaxrs, which does not contain JerseyApiDeclarationProvider/JerseyResourceListingProvider -->
+	<!-- Do not use swagger-jersey2-jaxrs, which does not contain JerseyApiDeclarationProvider/JerseyResourceListingProvider 
 	<dependency>
 	  <groupId>com.wordnik</groupId>
 	  <artifactId>swagger-jersey2-jaxrs_2.11</artifactId>
 	  <version>1.3.12</version>
 	</dependency>
-	
-<!-- We need to use swagger-core > 1.5.0 for Map, but CONFLICTS! 
+	-->
+
+<!-- We need to use swagger-core > 1.5.0 for Map, but CONFLICTS!-->
+<!-- START -->
+<!-- Can't figure out how to initialize Swagger.
 	<dependency>
 	    <groupId>com.wordnik</groupId>
 	    <artifactId>swagger-core</artifactId>
 	    <version>1.5.2-M1</version>
 	</dependency>
 -->
+	<dependency>
+	    <groupId>com.wordnik</groupId>
+	    <artifactId>swagger-jaxrs_2.11</artifactId>
+	    <version>1.3.12</version>
+	    <exclusions>
+	    	<exclusion>
+	    		<artifactId>jsr311-api</artifactId>
+	    		<groupId>javax.ws.rs</groupId>
+	    	</exclusion>
+	    </exclusions>
+	</dependency>
+<!-- END--> 
+
   </dependencies>
 
   <build>
@@ -93,18 +103,19 @@
 					<!--Required parameters BEGIN-->
 			        <locations>com.tsz662.rest.resources</locations>
 			        <apiVersion>1.0</apiVersion>
-			        <basePath>http://localhost:8080/swagger-demo</basePath>
+			        <!-- This must be http://{s3 website url}/{service.id}/{ext|int}/{release/draft} -->
+			        <basePath>http://tsz662-webdocs.s3-website-ap-northeast-1.amazonaws.com/pri/ext/draft/build001</basePath>
 			        <supportSpringMvc>false</supportSpringMvc>
 					<!--Required parameters END-->
 
 					<!---Document generation parameters BEGIN-->
-			        <outputPath>${basedir}/generated/index.html</outputPath><!-- static html -->
+			        <outputPath>${project.build.directory}/swagger-maven-plugin/index.html</outputPath><!-- static html -->
 			        <mustacheFileRoot>${basedir}/templates/</mustacheFileRoot>
 			        <outputTemplate>templates/strapdown.html.mustache</outputTemplate>
 					<!---Document generation parameters END-->
 					
 			        <!---Swagger JSON parameters BEGIN-->
-			        <swaggerDirectory>${basedir}/generated/swagger-ui</swaggerDirectory>
+			        <swaggerDirectory>${project.build.directory}/swagger-maven-plugin/swagger-ui</swaggerDirectory>
 			        <!---Swagger JSON parameters END-->
 			      </apiSource>
 			    </apiSources>

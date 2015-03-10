@@ -164,7 +164,7 @@ function exmapperTest() {
 		}
 	};
 	req.addListener("loadend", func.bind(req.getXhr()));
-	req.send("post", "others/", null);
+	req.send("post", "others/exmapper", null);
 }
 
 /**

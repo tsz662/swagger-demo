@@ -23,7 +23,6 @@ import javax.ws.rs.core.UriInfo;
 
 import com.tsz662.rest.models.ContactsMap;
 import com.tsz662.rest.models.v0.ErrorInfo;
-import com.tsz662.rest.models.v0.JsonTest;
 import com.tsz662.rest.models.v1.Contact;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -38,9 +37,8 @@ import com.wordnik.swagger.annotations.ApiResponse;
  * @author tsz662
  */
 // Swagger @ApiParam supports: @PathParam, @QueryParam, @HeaderParam, @FormParam, @BeanParam
-@SuppressWarnings("deprecation")
-@Path("contacts")
-@Api(value = "contacts", description = "Contact関連のリソース")
+@Path("/contacts")
+@Api(value = "/contacts", description = "Contact関連のリソース")
 public class Contacts {
 	
 	private final Map<Integer, Contact> contacts = ContactsMap.contacts;
@@ -79,7 +77,7 @@ public class Contacts {
 	 * @HTTP 500 サーバーエラー com.canon.tsz662.rest.models.v0.ErrorInfo
 	 */
 	@GET
-	@Path("{id}")
+	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "指定されたIDのContactを返す。",
 		position = 3,
@@ -92,7 +90,8 @@ public class Contacts {
 		@ApiResponse(code = 500, message = "サーバーエラー", response = ErrorInfo.class)
 	})
 	public Contact getContact(
-			@ApiParam(value = "取得したいContactのID", required = true) @PathParam("id") int id) {
+			@ApiParam(value = "取得したいContactのID", required = true)
+			@PathParam("id") int id) {
 		try {
 			if (id <= contacts.size()) {
 				Contact contact = contacts.get(id);
@@ -124,7 +123,7 @@ public class Contacts {
 	 * @since 1.0
 	 */
 	@GET
-	@Path("{id}/attrib")
+	@Path("/{id}/attrib")
 	@Produces(MediaType.TEXT_PLAIN)
 	@ApiOperation(
 		value = "Contactの指定された情報を返す。", 
@@ -137,9 +136,12 @@ public class Contacts {
 		@ApiResponse(code = 404, message = "指定されたIDのContactがいない")
 	})
 	public String getContactInfo(
-			@ApiParam(value = "属性を取得したいContactのID", required = true) @PathParam("id") int id,
-			@ApiParam(value = "hogeクッキーの値", required = true) @CookieParam("hoge") String cookie,
-			@ApiParam(value = "取得したい属性", required = true) @QueryParam("field") String attrib) {
+			@ApiParam(value = "属性を取得したいContactのID", required = true)
+			@PathParam("id") int id,
+			@ApiParam(value = "hogeクッキーの値", required = true)
+			@CookieParam("hoge") String cookie,
+			@ApiParam(value = "取得したい属性", required = true)
+			@QueryParam("field") String attrib) {
 		
 		if (cookie != null) {
 			if (!cookie.equals("foobar")) {
@@ -197,7 +199,14 @@ public class Contacts {
 		@ApiResponse(code = 201, message = "作成成功"),
 		@ApiResponse(code = 400, message = "不正なリクエスト")
 	})
-	public Response createContact(@HeaderParam("X-Auth") String auth, @HeaderParam("X-CSRF") String csrf, @Context UriInfo uriInfo,Contact contact) {
+	public Response createContact(
+			@ApiParam(value = "認証トークン文字列", required = true, defaultValue = "foo")
+			@HeaderParam("X-Auth") String auth, 
+			@ApiParam(value = "CSRFトークン文字列", required = true, defaultValue = "bar")
+			@HeaderParam("X-CSRF") String csrf, 
+			@Context UriInfo uriInfo,
+			@ApiParam(value = "登録するContactの情報", required = true)
+			Contact contact) {
 		
 		if (!auth.equals("foo") || !csrf.equals("bar")) {
 			return Response.status(Status.BAD_REQUEST).entity("X-Auth is " + auth + " and X-CSRF is " + csrf + ", but they're wrong!").build();
@@ -229,7 +238,7 @@ public class Contacts {
 	 * @since 1.0
 	 */
 	@PUT
-	@Path("{id}")
+	@Path("/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
@@ -245,6 +254,7 @@ public class Contacts {
 	public Response updateContact(
 			@ApiParam(value="更新するContactのID", required = true)
 			@PathParam("id") int id,
+			@ApiParam(value = "更新するContactの情報", required = true)
 			Contact update) {
 		ErrorInfo eInfo;
 
@@ -273,22 +283,6 @@ public class Contacts {
 	}
 	
 	/**
-	 * 指定されたIDのContactを更新する。
-	 * @param id 更新するContactのID
-	 * @param update アップデート情報
-	 * @HTTP 501 非対応
-	 * @deprecated ボディには{@link com.tsz662.rest.models.v1.Contact}を記述してください。
-	 * @version 0.9
-	 */
-	@PUT
-	@Path("{id}/deprecated")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Deprecated
-	public Response updateContact(@PathParam("id") int id, JsonTest update) {
-		return Response.status(Status.NOT_IMPLEMENTED).build();
-	}
-	
-	/**
 	 * 指定されたIDのContactを削除する。
 	 * @param id 削除するContactのID
 	 * @return なし
@@ -297,7 +291,7 @@ public class Contacts {
 	 * @HTTP 500 サーバーエラー
 	 */
 	@DELETE
-	@Path("{id}")
+	@Path("/{id}")
 	@ApiOperation(
 		value = "指定されたIDのContactを削除する。", 
 		position = 6
@@ -307,7 +301,9 @@ public class Contacts {
 		@ApiResponse(code = 404, message = "指定されたIDのContactがいない"),
 		@ApiResponse(code = 400, message = "サーバーエラー")
 	})
-	public Response deleteContact(@ApiParam(value = "削除するContactのID", required = true) @PathParam("id") int id) {
+	public Response deleteContact(
+			@ApiParam(value = "削除するContactのID", required = true)
+			@PathParam("id") int id) {
 		try {
 			if (Integer.valueOf(id) <= contacts.size()) {
 				contacts.remove(id);

@@ -1,7 +1,7 @@
 package com.tsz662.rest.models.v1;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+//import javax.xml.bind.annotation.XmlElement;
+//import javax.xml.bind.annotation.XmlRootElement;
 
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -13,8 +13,8 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  * @version 1.0
  * @author tsz662
  */
-@XmlRootElement(name = "Contact") // for enunciate. Swagger picks this up too if @ApiModel is absent.
-@ApiModel(value = "Contact", description = "Contactsリソースで扱われるモデル")
+//@XmlRootElement(name = "Contact") // for enunciate. Swagger picks this up too if @ApiModel is absent.
+@ApiModel(value = "Contact", description = "Contactsリソースで扱われるContactモデル")
 public class Contact {
 	private int id;
     private String name;
@@ -24,7 +24,7 @@ public class Contact {
      * 連絡先のID
      */
 //    @XmlElement(name = "id")
-    @ApiModelProperty()
+    @ApiModelProperty(value = "連絡先のID")
     public int getId() {
 		return id;
 	}
@@ -37,6 +37,7 @@ public class Contact {
      * 連絡先の名前
      */
 //	@XmlElement(name = "name")
+    @ApiModelProperty(value = "連絡先の名前")
     public String getName() {
     	return name;
     }
@@ -49,6 +50,7 @@ public class Contact {
      * 連絡先アドレス
      */
 //    @XmlElement(name = "address")
+    @ApiModelProperty(value = "連絡先アドレス")
     public String getAddress() {
     	return address;
     }

@@ -32,6 +32,8 @@ import com.tsz662.rest.interceptors.GzipResponse;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 
 /**
  * 以下のテスト用
@@ -47,7 +49,7 @@ import com.wordnik.swagger.annotations.ApiParam;
  * @author tsz662
  *
  */
-@Path("files")
+@Path("/files")
 @Api(value = "files", description = "ファイル関連のリソース")
 public class MyFiles {
 
@@ -60,19 +62,22 @@ public class MyFiles {
 	 * @HTTP 200 OK
 	 */
 	@POST
-	@Path("multipart")
+	@Path("/multipart")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.TEXT_HTML)
 	@ApiOperation(
 		value = "アップロードされたファイルの情報等を返す。",
 		position = 1
 	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "成功")
+	})
 	public Response uploadFile(
 			@ApiParam(value = "うp主名", required = true)
 			@FormDataParam("uploader") String uploader,
 			@ApiParam(value = "アップロードされたファイル(InputStream)", required = true)
 			@FormDataParam("file") InputStream file,
-			@ApiParam(value = "Content-Dispositionヘッダ")
+			// ContentDispositionHeaderはクライアントに関係ないので非表示にする
 			@FormDataParam("file") FormDataContentDisposition contentDispositionHeader) {
 		
 		final String LR = "<br>";
@@ -102,15 +107,18 @@ public class MyFiles {
 	 * @HTTP 500 サーバーエラー
 	 */
 	@GET
-	@Path("streamingoutput")
+	@Path("/streamingoutput")
 	@Produces(MediaType.TEXT_PLAIN)
 	@GzipResponse
 	@ApiOperation(
 		value = "StreamingOutputのテスト",
 		position = 2,
-		notes = "gzip圧縮して返す",
-		response = StreamingOutput.class
+		notes = "test.txtの内容をgzip圧縮して返す"
 	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "test.txtの内容"),
+		@ApiResponse(code = 500, message = "サーバーエラー")
+	})
 	public Response testStreamingOutput() {
 		StreamingOutput stream = new StreamingOutput() {
 			@Override
@@ -146,17 +154,21 @@ public class MyFiles {
 	 * @HTTP 500 指定ファイルがない/開けない
 	 */
 	@GET
-	@Path("images")
+	@Path("/images")
 	@Produces("image/jpeg")
 	@GzipResponse
 	@ApiOperation(
-		value = "指定された画像ファイルの中身をGZIPして返却する。",
+		value = "指定された画像ファイルの中身をGZIPして返却する。<br>responseTypeがblobの時はFile、arraybufferの時はInputStreamで返す。",
 		position = 3,
-		notes = "gzip圧縮して返す",
-		response = File.class
+		notes = "gzip圧縮して返す"
 	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "指定された画像ファイル"),
+		@ApiResponse(code = 400, message = "不正リクエスト"),
+		@ApiResponse(code = 500, message = "サーバーエラー")
+	})
 	public Response getImage(
-			@ApiParam(value = "responseType blob(File)かarraybuffer(InputStream)", required = true)
+			@ApiParam(value = "blob(File)かarraybuffer(InputStream)", required = true, allowableValues = "[blob,arraybuffer]")
 			@QueryParam("responseType") final String responseType,
 			@ApiParam(value = "取得ファイル名", required = true)
 			@QueryParam("filename") final String filename) {
@@ -191,7 +203,6 @@ public class MyFiles {
 				throw new WebApplicationException(Status.BAD_REQUEST);	
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
 		}
 	}

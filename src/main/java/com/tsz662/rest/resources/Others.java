@@ -1,11 +1,14 @@
 package com.tsz662.rest.resources;
 
+import java.util.Arrays;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.MatrixParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -15,12 +18,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.tsz662.rest.exceptions.BadRequestAttemptException;
+import com.tsz662.rest.models.v0.JsonTest;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
-import com.wordnik.swagger.model.ResponseMessage;
+//import com.wordnik.swagger.model.ResponseMessage;
 
 /**
  * 以下の出力テスト用
@@ -35,7 +39,7 @@ import com.wordnik.swagger.model.ResponseMessage;
  * @category テスト
  * @author tsz662
  */
-@Path("others")
+@Path("/others")
 @Api(value = "others", description = "その他(ExceptionMapperとかFormとか)実験用リソース")
 public class Others {
 	
@@ -46,7 +50,7 @@ public class Others {
 	 * @HTTP 200 OK
 	 */
 	@POST
-	@Path("form")
+	@Path("/form")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
 	@ApiOperation(
@@ -69,7 +73,7 @@ public class Others {
 	 * @HTTP 200 OK
 	 */
 	@GET
-	@Path("context")
+	@Path("/context")
 	@Produces(MediaType.TEXT_PLAIN)
 	@ApiOperation(
 		value = "Contextアノテーションテスト用",
@@ -95,7 +99,7 @@ public class Others {
 	 * @HTTP 200 OK
 	 */
 	@GET
-	@Path("matrixparam")
+	@Path("/matrixparam")
 	@ApiOperation(
 		value = "MatrixParamアノテーションテスト用",
 		position = 3
@@ -115,6 +119,7 @@ public class Others {
 	 * ExceptionMapperテスト用。パラメータも戻りもなし。
 	 */
 	@POST
+	@Path("/exmapper")
 	@ApiOperation(
 		value = "ExceptionMapperテスト用。パラメータも戻りもなし。",
 		position = 4
@@ -124,5 +129,39 @@ public class Others {
 	})
 	public void noProduceAnnotation() {
 		throw new BadRequestAttemptException();
+	}
+	
+	/**
+	 * 指定されたIDのContactを更新する。
+	 * @version 0.9
+	 */
+	@PUT
+	@Path("/jsontest")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(
+			value = "JsonTest出力用。",
+			position = 5,
+			response = JsonTest.class
+		)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "JsonTestモデル")
+	})
+	public JsonTest updateContact() {
+		return new JsonTest();
+	}
+
+	@GET
+	@Path("/java8test")
+	@ApiOperation(
+		value = "java8テスト", 
+		notes = "何も返しません", 
+		position = 6
+	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 204, message = "No content.")
+	})
+	public Response java8Test() {
+		Arrays.asList("a","b","c").forEach(System.out::println);
+		return Response.status(Status.NO_CONTENT).build();
 	}
 }

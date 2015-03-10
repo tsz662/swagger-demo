@@ -10,19 +10,19 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
 import com.tsz662.rest.models.ContactsMap;
 import com.tsz662.rest.models.v1.Contact;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.model.ResponseMessage;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 
 /**
- * Java8テスト
+ * テスト
  * @author tsz662
  *
  */
-@Path("lists")
+@Path("/lists")
 @Api(value = "lists", description = "配列/連想配列出力実験用リソース")
 public class Lists {
 	
@@ -32,7 +32,7 @@ public class Lists {
 	 * @HTTP 200 成功 com.canon.tsz662.rest.models.v1.Contact[]
 	 */
 	@GET
-	@Path("listtest")
+	@Path("/listtest")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
 		value = "Contact[]を返す。returnタグの出力確認用。",
@@ -50,7 +50,7 @@ public class Lists {
 	 * @HTTP 200 成功 List<com.canon.tsz662.rest.models.v1.Contact>
 	 */
 	@GET
-	@Path("listtest2")
+	@Path("/listtest2")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
 		value = "List&lt;Contact&gt;を返す。returnタグの出力確認用。",
@@ -74,7 +74,7 @@ public class Lists {
 	 * @HTTP 200 成功 Boolean[]
 	 */
 	@GET
-	@Path("listtest3")
+	@Path("/listtest3")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
 		value = "Boolean[]を返す。returnタグの出力確認用。",
@@ -92,13 +92,14 @@ public class Lists {
 	 * @HTTP 200 成功 Map<Integer, com.canon.tsz662.rest.models.v1.Contact>
 	 */
 	@GET
-	@Path("maptest")
+	@Path("/maptest")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
 		value = "Map&lt;Integer, Contact&gt;を返す。returnタグの出力確認用。",
 		position = 4,
-		response = ResponseMessage.class,
-		responseContainer = "Map")
+		response = Contact.class,
+		responseContainer = "Map"
+	)
 	public Map<Integer, Contact> getContactMap() {
 		return ContactsMap.contacts;
 	}
@@ -109,13 +110,14 @@ public class Lists {
 	 * @HTTP 200 成功 Map<String, com.canon.tsz662.rest.models.v1.Contact[]>
 	 */
 	@GET
-	@Path("maptest2")
+	@Path("/maptest2")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
 		value = "Map&lt;String, Contact[]&gt;を返す。",
 		position = 5,
 		response = Contact[].class,
-		responseContainer = "Map")
+		responseContainer = "Map"
+	)
 	public Map<String, Contact[]> getContactMap2() {
 		Contact[] contacts = {new Contact(), new Contact()};
 		Map<String, Contact[]> rtn = new HashMap<>();
@@ -129,11 +131,13 @@ public class Lists {
 	 * @HTTP 200 成功 Map<String, Collection<com.canon.tsz662.rest.models.v1.Contact>>
 	 */
 	@GET
-	@Path("maptest3")
+	@Path("/maptest3")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
 		value = "Map&lt;String, Collection&lt;Contact&gt;&gt;を返す。",
-		position = 6
+		position = 6,
+		response = Contact[].class,
+		responseContainer = "Map"
 	)
 	public Map<String, Collection<Contact>> getContactMap3() {
 		Collection<Contact> contacts = ContactsMap.contacts.values();
@@ -148,12 +152,12 @@ public class Lists {
 	 * @HTTP 200 成功 Map<String, List<Boolean>>
 	 */
 	@GET
-	@Path("maptest4")
+	@Path("/maptest4")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
 		value = "Map&lt;String, List&lt;Boolean&gt;&gt;を返す。",
 		position = 7,
-		response = List.class,
+		response = Boolean[].class,
 		responseContainer = "Map"
 	)
 	public Map<String, List<Boolean>> getContactMap4() {
@@ -164,19 +168,22 @@ public class Lists {
 	}
 	
 	/**
-	 * Map<String, Map<String, Contact>>を返す。<br>
+	 * ResponseでMap<String, Map<String, Contact>>を返す。<br>
 	 * @return マップ4
 	 * @HTTP 200 成功 Map<String, Map<String, com.canon.tsz662.rest.models.v1.Contact>>
 	 */
 	@GET
-	@Path("maptest5")
+	@Path("/maptest5")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
 		value = "Map&lt;String, Map&lt;String, Contact&gt;&gt;を返す。",
 		position = 8,
-		response = ResponseMessage.class,
+		response = Map.class,
 		responseContainer = "Map"
 	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, response = Map.class, message = "Map&lt;String, Map&lt;String, Contact&gt;&gt;")
+	})
 	public Map<String, Map<String, Contact>> getContactMap5() {
 		Map<String, Contact> map1 = new HashMap<>();
 		map1.put("contact", new Contact());
@@ -192,12 +199,17 @@ public class Lists {
 	 * 			Map<String, Map<String, List<com.canon.tsz662.rest.models.v1.Contact>>>
 	 */
 	@GET
-	@Path("maptest6")
+	@Path("/maptest6")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
 		value = "Map&lt;String, Map&lt;String, List&lt;Contact&gt;&gt;&gt;を返す。",
-		position = 9
+		position = 9,
+		response = Map.class,
+		responseContainer = "Map"
 	)
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, response = Map.class, message = "Map&lt;String, Map&lt;String, List&lt;Contact&gt;&gt;&gt;")
+	})
 	public Map<String, Map<String, List<Contact>>> getContactMap6() {
 		Contact[] _contacts = {new Contact(), new Contact()};
 		List<Contact> contacts = Arrays.asList(_contacts);

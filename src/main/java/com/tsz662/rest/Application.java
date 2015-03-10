@@ -6,14 +6,15 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import com.tsz662.rest.filters.DynamicFilterRegisterer;
+// 以下はswagger-core + swagger-jaxrs_2.11の場合
+import com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON;
+import com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider;
+import com.wordnik.swagger.jaxrs.listing.ResourceListingProvider;
+// 以下はswagger-jersey2-jaxrs_2.11の場合
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
-import com.wordnik.swagger.config.ConfigFactory;
-import com.wordnik.swagger.config.SwaggerConfig;
-import com.wordnik.swagger.jaxrs.config.DefaultJaxrsConfig;
-import com.wordnik.swagger.jersey.listing.ApiListingResourceJSON;
-import com.wordnik.swagger.jersey.listing.JerseyApiDeclarationProvider;
-import com.wordnik.swagger.jersey.listing.JerseyResourceListingProvider;
-import com.wordnik.swagger.model.ApiInfo;
+//import com.wordnik.swagger.jersey.listing.ApiListingResourceJSON;
+//import com.wordnik.swagger.jersey.listing.JerseyApiDeclarationProvider;
+//import com.wordnik.swagger.jersey.listing.JerseyResourceListingProvider;
 
 /**
  * web.xmlは使用しない為、通常のリソース登録に加え、Swaggerを使うためのセットアップを行う。
@@ -56,7 +57,7 @@ public class Application extends ResourceConfig {
 	final String rootPackage = this.getClass().getPackage().getName();
 	
 	public Application() {
-/*		BeanConfig config = new BeanConfig();
+		BeanConfig config = new BeanConfig();
 		config.setVersion("1.0.0");
 		// MEMO:
 		// different port is NG.
@@ -65,8 +66,6 @@ public class Application extends ResourceConfig {
 		config.setBasePath("http://localhost:8080/swagger-demo/api");
 		config.setResourcePackage("com.tsz662.rest.resources");
 		config.setScan(true);
-*/		
-		ConfigFactory.config().setBasePath("http://localhost:8080/swagger-demo/api");
 		
 		super.packages(
 				// Resources
@@ -88,7 +87,9 @@ public class Application extends ResourceConfig {
 		super.packages(this.rootPackage).register(DynamicFilterRegisterer.class);
 		
 		super.packages("com.wordnik.swagger.jersey.listing").register(ApiListingResourceJSON.class);
-		super.packages("com.wordnik.swagger.jersey.listing").register(JerseyApiDeclarationProvider.class);
-		super.packages("com.wordnik.swagger.jersey.listing").register(JerseyResourceListingProvider.class);
+		super.packages("com.wordnik.swagger.jersey.listing").register(ApiDeclarationProvider.class);
+		super.packages("com.wordnik.swagger.jersey.listing").register(ResourceListingProvider.class);
+//		super.packages("com.wordnik.swagger.jersey.listing").register(JerseyApiDeclarationProvider.class);
+//		super.packages("com.wordnik.swagger.jersey.listing").register(JerseyResourceListingProvider.class);
 	}
 }
