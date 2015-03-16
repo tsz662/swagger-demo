@@ -127,10 +127,11 @@ public class Contacts {
 	@Produces(MediaType.TEXT_PLAIN)
 	@ApiOperation(
 		value = "Contactの指定された情報を返す。", 
-		position = 4
+		position = 4,
+		response = String.class
 	)
 	@ApiResponses(value = {
-		@ApiResponse(code = 200, message = "成功"),
+		@ApiResponse(code = 200, message = "成功", response = String.class),
 		@ApiResponse(code = 400, message = "不正なリクエスト"),
 		@ApiResponse(code = 403, message = "クッキーがない"),
 		@ApiResponse(code = 404, message = "指定されたIDのContactがいない")
@@ -221,7 +222,7 @@ public class Contacts {
 			}
 			contact.setId(newId);
 			contacts.put(newId, contact);
-			return Response.status(Status.CREATED).location(uriInfo.getAbsolutePath()).entity("{\"result\":\"ok\"}").build();
+			return Response.status(Status.CREATED).location(uriInfo.getAbsolutePath()).entity(contact).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity("{\"result\":\"ng\"}").build();
 		}
